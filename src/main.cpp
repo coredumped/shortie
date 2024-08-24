@@ -24,6 +24,6 @@ void help(int argc, char *argv[]) {
   std::cout << " --home\t\tReplace home directory with tilde (~)\n";
   std::cout << " --no-home\tInverse of --home\n";
   std::cout << " -n <number>\tCount of characters to print per path component\n";
-  std::cout << "\nIf not PATH is given it default to the current working directory.\n";
+  std::cout << "\nIf no PATH is given shortie defaults to the current working directory.\n";
   exit(EXIT_SUCCESS);
 }
