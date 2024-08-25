@@ -1,4 +1,15 @@
+#ifndef SHORTIE_H
+#define SHORTIE_H
 #include <string>
+
+#ifndef DIRECTORY_DIVIDER
+#define DIRECTORY_DIVIDER '/'
+#endif
+
+#ifndef PROJECT_VERSION
+#define PROJECT_VERSION "develop"
+#endif
+
 
 class Shortie {
   private:
@@ -17,3 +28,5 @@ class Shortie {
   // Shortens the path
   std::string shortened();
 };
+
+#endif

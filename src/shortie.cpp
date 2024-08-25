@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <unistd.h>
+#include <config.h>
 #include "shortie.h"
 
 void help(int argc, char *argv[]);
@@ -27,6 +28,9 @@ void Shortie::parseArgs(int argc, char *argv[]) {
       useHomeFolderWildcard = true;
     } else if(arg == "--no-home") {
       useHomeFolderWildcard = false;
+    } else if(arg == "-v" || arg == "--version") {
+      std::cout << argv[0] << " version " << PROJECT_VERSION << std::endl;
+      exit(EXIT_SUCCESS);
     } else if(arg == "-n") {
       if (i + 1 < argc) {
         std::istringstream s(argv[++i]);
@@ -53,17 +57,19 @@ std::string Shortie::shortened() {
     isHomeRelative = true;
     if(path.size() > homedir.size()) {
       rend -= homedir.size();
+    } else if(path.size() == homedir.size()) {
+      return "~";
     }
   }
   auto rbegin = path.rbegin();
   int effectivePathLength = std::distance(rend, rbegin);
   int effectiveCharsPerComponent = std::clamp(charsPerComponent, 1, effectivePathLength - 2);
   // Ignore last / if present
-  if(*rbegin == '/') rbegin++;
+  if(*rbegin == DIRECTORY_DIVIDER) rbegin++;
 
   // Capture the last path component
   auto ptr = rbegin;
-  while(ptr != rend && *ptr != '/') {
+  while(ptr != rend && *ptr != DIRECTORY_DIVIDER) {
     shortenedPath.append(1, *ptr);
     ptr++;
   }
@@ -74,10 +80,10 @@ std::string Shortie::shortened() {
   }
 
   while (ptr != rend) {
-    if (*ptr == '/') {
+    if (*ptr == DIRECTORY_DIVIDER) {
       std::string component;
       for(int i = charsPerComponent; i > 0 && (ptr - i) != rend; i--) {
-        if(component.size() > 0 && *(ptr - i) == '/') {
+        if(component.size() > 0 && *(ptr - i) == DIRECTORY_DIVIDER) {
           component = "";
           continue;
         }
